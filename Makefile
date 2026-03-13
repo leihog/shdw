@@ -1,26 +1,26 @@
 BINARY  := shdw
+DIST    := dist
 PREFIX  ?= /usr/local/bin
 MODULE  := github.com/leihog/shdw
 
 VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 LDFLAGS := -ldflags="-s -w -X $(MODULE)/cmd.version=$(VERSION)"
 
-# Default build for current platform
 .PHONY: build
 build:
-	go build $(LDFLAGS) -o $(BINARY) .
+	@mkdir -p $(DIST)
+	go build $(LDFLAGS) -o $(DIST)/$(BINARY) .
 
-# Build for Linux amd64 (cross-compile from macOS)
 .PHONY: build-linux
 build-linux:
-	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o $(BINARY)-linux-amd64 .
+	@mkdir -p $(DIST)
+	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o $(DIST)/$(BINARY)-linux-amd64 .
 
-# Build for Linux arm64 (e.g. Raspberry Pi, AWS Graviton)
 .PHONY: build-linux-arm
 build-linux-arm:
-	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o $(BINARY)-linux-arm64 .
+	@mkdir -p $(DIST)
+	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o $(DIST)/$(BINARY)-linux-arm64 .
 
-# Build all targets
 .PHONY: build-all
 build-all: build build-linux build-linux-arm
 
@@ -29,9 +29,9 @@ build-all: build build-linux build-linux-arm
 .PHONY: install
 install: build
 	@mkdir -p $(PREFIX)
-	cp $(BINARY) $(PREFIX)/$(BINARY)
+	cp $(DIST)/$(BINARY) $(PREFIX)/$(BINARY)
 	@echo "Installed $(VERSION) to $(PREFIX)/$(BINARY)"
 
 .PHONY: clean
 clean:
-	rm -f $(BINARY) $(BINARY)-linux-amd64 $(BINARY)-linux-arm64
+	rm -rf $(DIST)
