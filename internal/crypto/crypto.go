@@ -16,8 +16,8 @@ import (
 type VaultVersion byte
 
 const (
-	// Version1 used PBKDF2-SHA256 + AES-256-GCM. No longer written; reading
-	// it will return ErrUnsupportedVersion so the user knows to recreate the vault.
+	// Version1 used PBKDF2-SHA256 + AES-256-GCM. No longer supported.
+	// It will return ErrUnsupportedVersion so the user knows to recreate the vault.
 	Version1 VaultVersion = 0x01
 
 	// Version2 uses Argon2id + AES-256-GCM. Current version.
@@ -33,7 +33,7 @@ var ErrUnsupportedVersion = errors.New(
 		"delete the vault file and create a new one",
 )
 
-// Argon2id parameters. Tuned for ~100ms on modern hardware.
+// Argon2id parameters.
 // time=1, memory=64MB, threads=4, keyLen=32
 const (
 	argonTime    = 1
@@ -47,7 +47,8 @@ const (
 // Encrypt encrypts plaintext using AES-256-GCM with an Argon2id-derived key.
 //
 // Output format:
-//   [version (1 byte)] [salt (16 bytes)] [nonce (12 bytes)] [ciphertext+tag]
+//
+//	[version (1 byte)] [salt (16 bytes)] [nonce (12 bytes)] [ciphertext+tag]
 func Encrypt(plaintext []byte, password string) ([]byte, error) {
 	salt := make([]byte, saltSize)
 	if _, err := io.ReadFull(rand.Reader, salt); err != nil {

@@ -253,3 +253,5 @@ process exits.
 
 **File permissions:** The vault file is created with `0600` permissions
 (owner read/write only).
+
+**File writes:** Writes use a temporary file plus atomic rename to avoid partial writes and reduce symlink-related risk. Symlink checks are best effort and are not a complete defense against all filesystem races on hostile multi-user systems.

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/leihog/shdw/internal/crypto"
+	"github.com/leihog/shdw/internal/file"
 )
 
 // re-export so callers can check without importing crypto directly
@@ -129,7 +130,36 @@ func Save(v *Vault, password string) error {
 	}
 
 	path := filepath.Join(dir, vaultFile)
-	return os.WriteFile(path, ciphertext, 0600)
+	if err := backupVaultFile(path); err != nil {
+		return fmt.Errorf("backup vault: %w", err)
+	}
+
+	return writeVaultFile(path, ciphertext)
+}
+
+func backupVaultFile(path string) error {
+	old, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	return writeVaultFile(path+".bak", old)
+}
+
+func writeVaultFile(path string, data []byte) error {
+	aw, err := file.NewAtomicWriter(path, 0o600)
+	if err != nil {
+		return err
+	}
+	defer aw.Abort()
+
+	if _, err := aw.Write(data); err != nil {
+		return err
+	}
+
+	return aw.Commit()
 }
 
 // ── Path helpers ─────────────────────────────────────────────────────────────
