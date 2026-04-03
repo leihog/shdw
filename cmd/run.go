@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/leihog/shdw/internal/store"
 )
 
 var runCmd = &cobra.Command{
@@ -53,7 +52,7 @@ Secrets exist only for the duration of the subprocess.`,
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

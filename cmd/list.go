@@ -37,7 +37,7 @@ everything, or specify a path to expand that namespace fully.`,
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

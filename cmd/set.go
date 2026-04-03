@@ -51,7 +51,7 @@ Errors if the path (or any segment of it) conflicts with an existing node's type
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

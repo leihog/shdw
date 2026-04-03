@@ -30,7 +30,7 @@ Intermediate namespaces at the destination are created automatically.`,
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

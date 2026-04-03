@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/leihog/shdw/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +26,7 @@ The value is printed with no trailing newline, making it safe for subshell use:
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

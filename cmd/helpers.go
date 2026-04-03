@@ -17,7 +17,7 @@ func keyCompleter(cmd *cobra.Command, args []string, toComplete string) ([]strin
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
-	vault, err := store.Load(password)
+	vault, err := openVault(password)
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
@@ -30,7 +30,7 @@ func nsCompleter(cmd *cobra.Command, args []string, toComplete string) ([]string
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
-	vault, err := store.Load(password)
+	vault, err := openVault(password)
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
@@ -43,7 +43,7 @@ func anyCompleter(cmd *cobra.Command, args []string, toComplete string) ([]strin
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
-	vault, err := store.Load(password)
+	vault, err := openVault(password)
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
@@ -92,7 +92,6 @@ func getMasterPassword(confirmIfNew bool) (string, error) {
 			return "", fmt.Errorf("passwords do not match")
 		}
 		password := string(pw1)
-		_ = keychain.Set(password)
 		return password, nil
 	}
 
@@ -103,6 +102,17 @@ func getMasterPassword(confirmIfNew bool) (string, error) {
 		return "", err
 	}
 	password := string(pw)
-	_ = keychain.Set(password)
 	return password, nil
+}
+
+// openVault loads the vault with the given password and, on success,
+// caches the password in the OS keychain so subsequent commands don't
+// need to prompt again.
+func openVault(password string) (*store.Vault, error) {
+	vault, err := store.Load(password)
+	if err != nil {
+		return nil, err
+	}
+	_ = keychain.Set(password)
+	return vault, nil
 }

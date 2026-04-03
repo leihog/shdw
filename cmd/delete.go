@@ -28,7 +28,7 @@ Use with care — deleting a namespace removes all keys within it.`,
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

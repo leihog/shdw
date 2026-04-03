@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/atotto/clipboard"
-	"github.com/leihog/shdw/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +27,7 @@ The value is never written to stdout or stderr.`,
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

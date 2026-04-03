@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/leihog/shdw/internal/file"
-	"github.com/leihog/shdw/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +35,7 @@ Output goes to stdout by default; use -o to write to a file.`,
 			return err
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			return err
 		}

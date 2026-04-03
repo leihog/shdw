@@ -39,7 +39,7 @@ var infoCmd = &cobra.Command{
 			return nil
 		}
 
-		vault, err := store.Load(password)
+		vault, err := openVault(password)
 		if err != nil {
 			fmt.Println("  Locked       yes (cached password invalid)")
 			return nil

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/leihog/shdw/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -20,8 +19,7 @@ Use this when you want to pre-unlock without running another command.`,
 		if err != nil {
 			return err
 		}
-		// Verify the password actually opens the vault
-		if _, err := store.Load(password); err != nil {
+		if _, err := openVault(password); err != nil {
 			return err
 		}
 		fmt.Fprintln(os.Stderr, "Vault unlocked.")
